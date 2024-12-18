@@ -59,7 +59,7 @@
                     // 10 times a second. Also ensure that when disconnected, Puck.js
                     // resets so the setInterval doesn't keep draining battery.
                     connection.write("setWatch(function(e) {\n" +
-                        "  Bluetooth.println(Bluetooth);\n" +
+                        "  Bluetooth.println(e);\n" +
                         "}, BTN, {edge:'falling', repeat:true});NRF.on('disconnect', function() {reset()});\n",
                         function() { console.log("Ready..."); });
                 }, 1500);
