@@ -26,7 +26,7 @@
     // Make sure your mouse cursor turns into a hand when over it, and gray it out
     // path.style="cursor:pointer;fill:#BBB";
 
-    let clickInterval;
+    let clickTimeout;
 
     const CLICKS = {
         ONE: 'ONE', // ours point
@@ -63,13 +63,13 @@
             changeGame(CLICKS.LONG);
         } else {
             // if (clickInterval) {
-            if (clickInterval?.interval) {
-                clearInterval(clickInterval.interval);
+            if (clickTimeout?.timeout) {
+                clearTimeout(clickTimeout.timeout);
             }
-            clickInterval = {
-                clicks: (clickInterval?.clicks || 0) + 1, interval: setInterval(function () {
-                    changeGame(translateClickCount(clickInterval.clicks));
-                    clickInterval = null;
+            clickTimeout = {
+                clicks: (clickTimeout?.clicks || 0) + 1, timeout: setTimeout(function () {
+                    changeGame(translateClickCount(clickTimeout.clicks));
+                    clickTimeout = null;
                 }, 501)
             }
             // }
