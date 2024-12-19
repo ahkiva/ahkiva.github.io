@@ -1,7 +1,10 @@
 <html>
 <head>
     <style>
-        body { margin:0;  }
+        body {
+            margin: 0;
+        }
+
         /*svg {*/
         /*    display:block; position:absolute;*/
         /*    top:0%; left:0%; width:100%; height:100%;*/
@@ -23,29 +26,107 @@
     // Make sure your mouse cursor turns into a hand when over it, and gray it out
     // path.style="cursor:pointer;fill:#BBB";
 
+    let clickInterval;
+
+    const CLICKS = {
+        ONE: 'ONE', // ours point
+        DOUBLE: 'DOUBLE', // opponents point
+        TRIPLE: 'TRIPLE', // new game
+        LONG: 'LONG', // undo > 0.5 s
+        VERY_LONG: 'VERY_LONG' // timeout > 3.0 s
+    }
+
+    function handleClick(v) {
+        const input = parseToObject(v)
+        detectClickType(input)
+        var ours = document.getElementById("ours");
+        var opponent = document.getElementById("opponent");
+        ours.innerHTML = time;
+        opponent.innerHTML = (parseInt(opponent.innerHTML) + parseInt(time)).toString();
+    }
+
+    function parseToObject(v) {
+        let result = {};
+        let parts = v.split(';');
+        parts.forEach(function (p) {
+            const varParts = p.split('=');
+            result = {...result, [varParts[0]]: varParts[1]}
+        })
+        return result;
+    }
+
+    function detectClickType(v) {
+        const duration = v.time - v.lastTime;
+        if (duration > 3.0) {
+            changeGame(CLICKS.VERY_LONG);
+        } else if (duration > 0.5) {
+            changeGame(CLICKS.LONG);
+        } else {
+            // if (clickInterval) {
+            if (clickInterval?.interval) {
+                clearInterval(clickInterval.interval);
+            }
+            clickInterval = {
+                clicks: clickInterval.clicks + 1, interval: setInterval(function () {
+                    changeGame(translateClickCount(clickInterval.clicks));
+                    clickInterval = null;
+                }, 501)
+            }
+            // }
+            // clickInterval = {clicks: 1, interval: setInterval(function () {
+            //     changeGame(CLICKS.ONE);
+            //     clickInterval = null;
+            // }, 501)}
+
+        }
+    }
+
+    function translateClickCount(clickCount) {
+        switch (clickCount) {
+            case 1:
+                return CLICKS.ONE;
+            case 2:
+                return CLICKS.DOUBLE;
+            case 3:
+                return CLICKS.TRIPLE;
+        }
+    }
+
+    function changeGame(clickType) {
+        console.log("Change game to: " + clickType);
+    }
+
     // Called when we get a line of data - updates the light color
     function onLine(v) {
-        console.log("Received: ",v);
-        console.log("Received typeof: "+ (typeof v));
+        console.log("Received: ", v);
+        console.log("Received typeof: " + (typeof v));
+        if (v.startsWith('click;')) {
+            handleClick(v.substring(6))
+        }
     }
+
     var started = false;
+
     function start() {
         initiateConnection()
     }
+
     function startGame() {
         started = true;
         document.getElementById("ours").innerHTML = "0";
         document.getElementById("opponent").innerHTML = "0";
     }
+
     // When clicked, connect or disconnect
     var connection;
+
     function initiateConnection() {
         if (connection) {
             connection.close();
             connection = undefined;
             return
         }
-        Puck.connect(function(c) {
+        Puck.connect(function (c) {
             if (!c) {
                 alert("Couldn't connect!");
                 return;
@@ -54,26 +135,26 @@
             // Handle the data we get back, and call 'onLine'
             // whenever we get a line
             var buf = "";
-            connection.on("data", function(d) {
+            connection.on("data", function (d) {
                 buf += d;
                 var i = buf.indexOf("\n");
-                while (i>=0) {
-                    onLine(buf.substr(0,i));
-                    buf = buf.substr(i+1);
+                while (i >= 0) {
+                    onLine(buf.substr(0, i));
+                    buf = buf.substr(i + 1);
                     i = buf.indexOf("\n");
                 }
             });
             // First, reset Puck.js
-            connection.write("reset();\n", function() {
+            connection.write("reset();\n", function () {
                 // Wait for it to reset itself
-                setTimeout(function() {
+                setTimeout(function () {
                     // Now tell it to write data on the current light level to Bluetooth
                     // 10 times a second. Also ensure that when disconnected, Puck.js
                     // resets so the setInterval doesn't keep draining battery.
                     connection.write("setWatch(function(e) {\n" +
-                        "  Bluetooth.println('click;time=' + e.lastTime + ';time=' + e.time);\n" +
+                        "  Bluetooth.println('click;lastTime=' + e.lastTime + ';time=' + e.time);\n" +
                         "}, BTN, {edge:'falling', repeat:true});NRF.on('disconnect', function() {reset()});\n",
-                        function() {
+                        function () {
                             console.log("Ready...");
                             startGame();
                         });
@@ -81,6 +162,7 @@
             });
         });
     }
+
     // path.addEventListener("click", initiateConnection);
 </script>
 </body>
