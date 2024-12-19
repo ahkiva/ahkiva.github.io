@@ -38,11 +38,11 @@
 
     function handleClick(v) {
         const input = parseToObject(v)
-        detectClickType(input)
-        var ours = document.getElementById("ours");
-        var opponent = document.getElementById("opponent");
-        ours.innerHTML = time;
-        opponent.innerHTML = (parseInt(opponent.innerHTML) + parseInt(time)).toString();
+        parseClickType(input)
+        // var ours = document.getElementById("ours");
+        // var opponent = document.getElementById("opponent");
+        // ours.innerHTML = time;
+        // opponent.innerHTML = (parseInt(opponent.innerHTML) + parseInt(time)).toString();
     }
 
     function parseToObject(v) {
@@ -55,7 +55,7 @@
         return result;
     }
 
-    function detectClickType(v) {
+    function parseClickType(v) {
         const duration = v.time - v.lastTime;
         if (duration > 3.0) {
             changeGame(CLICKS.VERY_LONG);
