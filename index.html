@@ -67,7 +67,7 @@
                 clearInterval(clickInterval.interval);
             }
             clickInterval = {
-                clicks: clickInterval.clicks + 1, interval: setInterval(function () {
+                clicks: (clickInterval?.clicks || 0) + 1, interval: setInterval(function () {
                     changeGame(translateClickCount(clickInterval.clicks));
                     clickInterval = null;
                 }, 501)
