@@ -62,7 +62,6 @@
         } else if (duration > 0.5) {
             changeGame(CLICKS.LONG);
         } else {
-            // if (clickInterval) {
             if (clickTimeout?.timeout) {
                 clearTimeout(clickTimeout.timeout);
             }
@@ -72,12 +71,6 @@
                     clickTimeout = null;
                 }, 501)
             }
-            // }
-            // clickInterval = {clicks: 1, interval: setInterval(function () {
-            //     changeGame(CLICKS.ONE);
-            //     clickInterval = null;
-            // }, 501)}
-
         }
     }
 
@@ -94,6 +87,12 @@
 
     function changeGame(clickType) {
         console.log("Change game to: " + clickType);
+        switch (clickType) {
+            case CLICKS.ONE:
+                const ours = document.getElementById("ours");
+                ours.innerHTML = parseInt(ours.innerHTML) + 1;
+                break;
+        }
     }
 
     // Called when we get a line of data - updates the light color
