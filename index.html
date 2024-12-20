@@ -201,7 +201,13 @@
 
     function connect(c) {
         if (!c) {
-            alert("Couldn't connect!");
+            // alert("Couldn't connect!");
+            console.log('COULD NOT CONNECT!')
+            const reconnectTimeout = getReconnectRetryTimeout();
+            if (reconnectTimeout > 0) {
+                reconnectErrorCount++
+                setTimeout(() => connection.reconnect(), reconnectTimeout);
+            }
             return;
         }
         connection = c;
@@ -209,11 +215,12 @@
     }
 
     function reconnect(c) {
+        console.log('RECONNECTTTTTTTTTTTTTTTTTTTTTTT');
         if (!c) {
             reconnectErrorCount++
             const reconnectTimeout = getReconnectRetryTimeout();
-            if(reconnectTimeout > 0) {
-                setTimeout(() => connection.reconnect(reconnect), reconnectTimeout)
+            if (reconnectTimeout > 0) {
+                setTimeout(() => connection.reconnect(reconnect), reconnectTimeout);
             }
             return;
         }
@@ -222,7 +229,7 @@
     }
 
     function getReconnectRetryTimeout() {
-        switch(reconnectErrorCount) {
+        switch (reconnectErrorCount) {
             case 1:
                 return 10000;
                 break;
@@ -253,7 +260,8 @@
         connection.on("close", function (d) {
             console.log('on close d:', d)
             if (started) {
-                setTimeout(() => connection.reconnect(reconnect), 5000)
+                reconnectErrorCount++
+                setTimeout(() => connection.reconnect(), 5000)
             }
         });
         // First, reset Puck.js
