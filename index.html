@@ -214,6 +214,9 @@
             connection.on("disconnect", function (d) {
                 console.log('on disconnect d:',d)
             });
+            connection.on("close", function (d) {
+                console.log('on close d:',d)
+            });
             connection.on("connect", function (d) {
                 console.log('on connect d:',d)
             });
