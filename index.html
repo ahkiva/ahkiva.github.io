@@ -211,6 +211,16 @@
                     i = buf.indexOf("\n");
                 }
             });
+            connection.on("disconnect", function (d) {
+                console.log('on disconnect d:',d)
+                // buf += d;
+                // var i = buf.indexOf("\n");
+                // while (i >= 0) {
+                //     onLine(buf.substring(0, i));
+                //     buf = buf.substring(i + 1);
+                //     i = buf.indexOf("\n");
+                // }
+            });
             // First, reset Puck.js
             connection.write("reset();\n", function () {
                 // Wait for it to reset itself
