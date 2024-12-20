@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="NoSleep.min.js"></script>
     <script>
+        import NoSleep from 'NoSleep.min.js';
         tailwind.config = {
             theme: {
                 extend: {
@@ -60,6 +62,14 @@
     // var path = document.getElementsByTagName('path')[0];
     // Make sure your mouse cursor turns into a hand when over it, and gray it out
     // path.style="cursor:pointer;fill:#BBB";
+
+    let noSleep = new NoSleep();
+    // Enable wake lock.
+    // (must be wrapped in a user input event handler e.g. a mouse or touch handler)
+    document.addEventListener('click', function enableNoSleep() {
+        document.removeEventListener('click', enableNoSleep, false);
+        noSleep.enable();
+    }, false);
 
     let clickTimeout;
     const history = []
