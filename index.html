@@ -41,6 +41,10 @@
             font-size: 10vh;
         }
 
+        #reconnect {
+            font-size: 10vh;
+        }
+
         .error {
             border: red solid 5vh;
         }
@@ -96,7 +100,7 @@
     // }, false);
 
     let clickTimeout;
-    const history = [];
+    let history = [];
 
     const CLICKS = {
         ONE: 'ONE', // ours point
@@ -104,6 +108,12 @@
         TRIPLE: 'TRIPLE', // new game
         LONG: 'LONG', // > 0.5 s undo
         VERY_LONG: 'VERY_LONG' // > 3.0 s timeout
+    }
+
+    const ACTION = {
+        INC_OURS: 'INC_OURS',
+        INC_OPPONENT: 'INC_OPPONENT',
+
     }
 
     function handleClick(v) {
@@ -124,16 +134,16 @@
     function parseClickType(v) {
         const duration = v.time - v.lastTime;
         if (duration > 3.0) {
-            changeGame(CLICKS.VERY_LONG);
+            gameCommand(CLICKS.VERY_LONG);
         } else if (duration > 0.5) {
-            changeGame(CLICKS.LONG);
+            gameCommand(CLICKS.LONG);
         } else {
             if (clickTimeout?.timeout) {
                 clearTimeout(clickTimeout.timeout);
             }
             clickTimeout = {
                 clicks: (clickTimeout?.clicks || 0) + 1, timeout: setTimeout(function () {
-                    changeGame(translateClickCount(clickTimeout.clicks));
+                    gameCommand(translateClickCount(clickTimeout.clicks));
                     clickTimeout = null;
                 }, 501)
             }
@@ -151,16 +161,30 @@
         }
     }
 
-    function changeGame(clickType) {
+    function gameCommand(clickType) {
         console.log("Change game to: " + clickType);
         switch (clickType) {
             case CLICKS.ONE:
                 const ours = document.getElementById("ours");
                 ours.innerHTML = parseInt(ours.innerHTML) + 1;
+                history.push(ACTION.INC_OURS);
                 break;
             case CLICKS.DOUBLE:
                 const opponent = document.getElementById("opponent");
                 opponent.innerHTML = parseInt(opponent.innerHTML) + 1;
+                history.push(ACTION.INC_OPPONENT);
+                break;
+            case CLICKS.LONG:
+                resetGameScore();
+            case CLICKS.TRIPLE:
+                const lastAction = history.pop();
+                if (lastAction === ACTION.INC_OURS) {
+                    const ours = document.getElementById("ours");
+                    ours.innerHTML = parseInt(ours.innerHTML) - 1;
+                } else if (lastAction === ACTION.INC_OPPONENT) {
+                    const opponent = document.getElementById("opponent");
+                    opponent.innerHTML = parseInt(opponent.innerHTML) - 1;
+                }
                 break;
         }
     }
@@ -195,10 +219,17 @@
     function startGame() {
         started = true;
         noSleep.enable();
+        history = []
 
         document.getElementById("start-game").style.display = "none";
         document.getElementById("game").style.display = "block";
         document.getElementById("end-game").style.display = "block";
+        resetGameScore();
+        // document.getElementById("ours").innerHTML = "0";
+        // document.getElementById("opponent").innerHTML = "0";
+    }
+
+    function resetGameScore() {
         document.getElementById("ours").innerHTML = "0";
         document.getElementById("opponent").innerHTML = "0";
     }
@@ -224,6 +255,7 @@
         resetErrorCount();
         clearTimeout(reconnectTimeout);
         reconnectTimeout = null;
+        connection.reconnect(connect);
     }
 
     function connect(c) {
