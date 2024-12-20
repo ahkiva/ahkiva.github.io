@@ -152,6 +152,8 @@
         console.log("Received typeof: " + (typeof v));
         if (v.startsWith('click;')) {
             handleClick(v.substring(6))
+        } else if(v.startsWith('click;', 1)) {
+            handleClick(v.substring(7))
         }
     }
 
