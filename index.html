@@ -72,10 +72,10 @@
     let noSleep = new NoSleep();
     // Enable wake lock.
     // (must be wrapped in a user input event handler e.g. a mouse or touch handler)
-    document.addEventListener('click', function enableNoSleep() {
-        document.removeEventListener('click', enableNoSleep, false);
-        noSleep.enable();
-    }, false);
+    // document.addEventListener('click', function enableNoSleep() {
+    //     document.removeEventListener('click', enableNoSleep, false);
+    //     noSleep.enable();
+    // }, false);
 
     let clickTimeout;
     const history = []
@@ -168,10 +168,13 @@
         document.getElementById("start-game").style.display = "block";
         document.getElementById("game").style.display = "none";
         document.getElementById("end-game").style.display = "none";
+        noSleep.disable();
+        connection?.close();
     }
 
     function startGame() {
         started = true;
+        noSleep.enable();
 
         document.getElementById("start-game").style.display = "none";
         document.getElementById("game").style.display = "block";
