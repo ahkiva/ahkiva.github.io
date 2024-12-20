@@ -1,5 +1,20 @@
+<!doctype html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifford: '#da373d',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
             margin: 0;
@@ -15,6 +30,9 @@
 <!--<svg viewBox="0 0 24 24">-->
 <!--    <path fill="#000000" d="M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z" />-->
 <!--</svg>-->
+<h1 class="text-3xl font-bold underline text-clifford">
+    Hello world!
+</h1>
 <button onclick="start()">START</button>
 <div id="ours"></div>
 <div id="opponent"></div>
@@ -27,13 +45,14 @@
     // path.style="cursor:pointer;fill:#BBB";
 
     let clickTimeout;
+    const history = []
 
     const CLICKS = {
         ONE: 'ONE', // ours point
         DOUBLE: 'DOUBLE', // opponents point
         TRIPLE: 'TRIPLE', // new game
-        LONG: 'LONG', // undo > 0.5 s
-        VERY_LONG: 'VERY_LONG' // timeout > 3.0 s
+        LONG: 'LONG', // > 0.5 s undo
+        VERY_LONG: 'VERY_LONG' // > 3.0 s timeout
     }
 
     function handleClick(v) {
@@ -138,8 +157,8 @@
                 buf += d;
                 var i = buf.indexOf("\n");
                 while (i >= 0) {
-                    onLine(buf.substr(0, i));
-                    buf = buf.substr(i + 1);
+                    onLine(buf.substring(0, i));
+                    buf = buf.substring(i + 1);
                     i = buf.indexOf("\n");
                 }
             });
