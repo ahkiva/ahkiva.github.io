@@ -28,10 +28,13 @@
             color: blue;
         }
         .score {
-            font-size: 45rem;
+            font-size: 100vh;
         }
         #start-game {
-            font-size: 15rem;
+            font-size: 50vh;
+        }
+        #end-game {
+            font-size: 10vh;
         }
 
         /*svg {*/
@@ -46,9 +49,12 @@
 <!--</svg>-->
 
 
-<div class="border-2 flex flex-col justify-center items-center stretch h-screen">
+<div class="flex flex-col justify-center items-center stretch h-screen">
     <div class="text-center">
         <button id="start-game" onclick="start()" type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">START</button>
+    </div>
+    <div class="text-center absolute mx-auto bottom-0">
+        <button style="display: none;" id="end-game" onclick="endGame()" type="button" class="text-white bg-red-800 hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-2 dark:bg-red-800 dark:hover:bg-red-700 dark:focus:ring-red-700 dark:border-red-700">END</button>
     </div>
     <div id="game" class="columns-2 w-full" style="display: none;">
         <div id="ours" class="score text-center size-full">10</div>
@@ -85,10 +91,6 @@
     function handleClick(v) {
         const input = parseToObject(v)
         parseClickType(input)
-        // var ours = document.getElementById("ours");
-        // var opponent = document.getElementById("opponent");
-        // ours.innerHTML = time;
-        // opponent.innerHTML = (parseInt(opponent.innerHTML) + parseInt(time)).toString();
     }
 
     function parseToObject(v) {
@@ -161,11 +163,19 @@
         initiateConnection()
     }
 
+    function endGame() {
+        started = false;
+        document.getElementById("start-game").style.display = "block";
+        document.getElementById("game").style.display = "none";
+        document.getElementById("end-game").style.display = "none";
+    }
+
     function startGame() {
         started = true;
 
         document.getElementById("start-game").style.display = "none";
         document.getElementById("game").style.display = "block";
+        document.getElementById("end-game").style.display = "block";
         document.getElementById("ours").innerHTML = "0";
         document.getElementById("opponent").innerHTML = "0";
     }
