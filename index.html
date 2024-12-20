@@ -206,7 +206,7 @@
             const reconnectTimeout = getReconnectRetryTimeout();
             if (reconnectTimeout > 0) {
                 reconnectErrorCount++
-                setTimeout(() => connection.reconnect(), reconnectTimeout);
+                setTimeout(() => connection.reconnect(connect), reconnectTimeout);
             }
             return;
         }
@@ -261,7 +261,7 @@
             console.log('on close d:', d)
             if (started) {
                 reconnectErrorCount++
-                setTimeout(() => connection.reconnect(), 5000)
+                setTimeout(() => connection.reconnect(connect), 5000)
             }
         });
         // First, reset Puck.js
