@@ -104,6 +104,9 @@
     let clickTimeout;
     let history = [];
 
+
+
+
     const CLICKS = {
         ONE: 'ONE', // ours point
         DOUBLE: 'DOUBLE', // opponents point
@@ -115,7 +118,6 @@
     const ACTION = {
         INC_OURS: 'INC_OURS',
         INC_OPPONENT: 'INC_OPPONENT',
-
     }
 
     function handleClick(v) {
@@ -137,7 +139,7 @@
         const duration = v.time - v.lastTime;
         if (duration > 3.0) {
             gameCommand(CLICKS.VERY_LONG);
-        } else if (duration > 0.5) {
+        } else if (duration > 1.0) {
             gameCommand(CLICKS.LONG);
         } else {
             if (clickTimeout?.timeout) {
